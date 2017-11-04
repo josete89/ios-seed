@@ -22,6 +22,13 @@ final public class HomeViewController: UIViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        bind()
+    }
+    
+    func bind(){
+        vm?.output.greets.subscribe({ (event) in
+            
+        })
     }
 
     override public func didReceiveMemoryWarning() {

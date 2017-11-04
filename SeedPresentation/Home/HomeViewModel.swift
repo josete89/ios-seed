@@ -8,13 +8,14 @@
 
 import Foundation
 import SeedDomain_iOS
+import RxSwift
 
 public protocol HomeViewModelInput {
     func greetsPressed()
 }
 
 public protocol HomeViewModelOutput {
-    var greets:String {get}
+    var greets: PublishSubject<String> { get }
 }
 
 public protocol HomeViewModelType {
@@ -26,19 +27,23 @@ public protocol HomeViewModelType {
 internal final class HomeViewModel: HomeViewModelType,HomeViewModelInput,HomeViewModelOutput {
 
     let domain:GreetingsInput
+    let dispose = DisposeBag()
     
     public var input: HomeViewModelInput { return self }
     public var output: HomeViewModelOutput { return self }
     
-    public var greets: String
+    public var greets: PublishSubject<String>
     
     public init(domain:GreetingsInput) {
         self.domain = domain
-        self.greets = ""
+        self.greets = PublishSubject()
     }
     
     public func greetsPressed() {
-        self.greets = domain.sayHi()
+        domain.sayHi().subscribe {[weak self] (event) in
+            guard let str = event.element else { return; }
+            self?.greets.onNext(str)
+        }.disposed(by: dispose)
     }
     
 }

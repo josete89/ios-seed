@@ -7,13 +7,14 @@
 //
 
 import Foundation
+import RxSwift
 
 public protocol GreetingsInput {
-    func sayHi() -> String
+    func sayHi() -> Observable<String>
 }
 
 final class Grettings:GreetingsInput {
-    public func sayHi() -> String {
-        return "Hi"
+    public func sayHi() -> Observable<String> {
+        return Observable.just("Hi")
     }
 }
